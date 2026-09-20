@@ -17,7 +17,6 @@
             background: #fff;
             min-height: 100vh;
         }
-
         /* --- Address Bar --- */
         .address-bar-container {
             padding: 10px 15px;
@@ -64,7 +63,6 @@
             font-size: 15px;
             outline: none;
         }
-
         /* --- Bar sa Itaas, KANAN --- */
         .top-bar {
             display: flex;
@@ -92,7 +90,6 @@
         .top-icons a:hover, .top-icons button:hover {
             opacity: 0.7;
         }
-
         /* --- Pababang Menu --- */
         .menu {
             display: none;
@@ -128,7 +125,6 @@
             gap: 12px;
             width: 100%;
         }
-
         /* --- Logo --- */
         .logo {
             text-align: center;
@@ -141,7 +137,6 @@
             max-width: 150px;
             border-radius: 8px;
         }
-
         /* --- Kahon ng Paghahanap --- */
         .search-box {
             text-align: center;
@@ -181,7 +176,6 @@
             cursor: pointer;
             font-size: 16px;
         }
-
         /* --- Mga Shortcut --- */
         .shortcuts {
             display: flex;
@@ -254,7 +248,6 @@
         .delete-btn:hover { background: #ffebee; color: #d32f2f; }
         #addShortcutBtn { background: #f8f9fa; }
         #addShortcutBtn:hover { background: #e8eaed; }
-
         /* --- Para sa Android/Mobile --- */
         @media (max-width: 480px) {
             .top-bar { padding: 10px 15px; }
@@ -298,15 +291,61 @@
         </div>
     </div>
 
-    <!-- Pababang Menu -->
+    <!-- ✅ PABABANG MENU — NA-AYOS NA, KUMPLETO ANG PAGSARA -->
     <div id="menu" class="menu">
-        <div class="icon-item"><a href="https://myaccount.google.com" target="_blank"><i class="fas fa-user-circle"></i> Account</a></div>
-        <div class="icon-item"><a href="https://drive.google.com" target="_blank"><i class="fab fa-google-drive"></i> Drive</a></div>
-        <div class="icon-item"><a href="https://www.youtube.com" target="_blank"><i class="fab fa-youtube"></i> YouTube</a></div>
-        <div class="icon-item"><a href="https://www.google.com/maps" target="_blank"><i class="fas fa-map-marker-alt"></i> Maps</a></div>
-        <div class="icon-item"><a href="https://calendar.google.com" target="_blank"><i class="fas fa-calendar-alt"></i> Calendar</a></div>
-        <div class="icon-item"><a href="https://images.google.com" target="_blank"><i class="fas fa-images"></i> Mga Larawan</a></div>
+        <div class="icon-item">
+            <a href="https://myaccount.google.com" target="_blank">
+                <i class="fas fa-user-circle"></i>
+                <span>Account</span>
+            </a>
+        </div>
+        <div class="icon-item">
+            <a href="https://drive.google.com" target="_blank">
+                <i class="fab fa-google-drive"></i>
+                <span>Drive</span>
+            </a>
+        </div>
+        <div class="icon-item">
+            <a href="https://www.youtube.com" target="_blank">
+                <i class="fab fa-youtube"></i>
+                <span>YouTube</span>
+            </a>
+        </div>
+        <div class="icon-item">
+            <a href="https://www.google.com/maps" target="_blank">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Maps</span>
+            </a>
+        </div>
+        <div class="icon-item">
+            <a href="https://calendar.google.com" target="_blank">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Calendar</span>
+            </a>
+        </div>
+        <div class="icon-item">
+            <a href="https://images.google.com" target="_blank">
+                <i class="fas fa-images"></i>
+                <span>Mga Larawan</span>
+            </a>
+        </div>
+
+        <div class="icon-item">
+            <a href="https://espedidorobin372-cmyk.github.io/TIMPLA-NG-TINAPAY/timpla_tinapay2.html" target="_blank">
+                <i class="fas fa-bread-slice"></i>
+                <span>Timpla ng Tinapay</span>
+            </a>
+        </div>
+
+        <div class="icon-item">
+            <a href=" https://espedidorobin372-cmyk.github.io/crosecbus/" target="_blank">
+                <i class="fas fa-shop"></i>
+                <span>Robin & Jane Bakery</span>
+            </a>
+        </div>
+
     </div>
+    <!-- ✅ TAMA NA ANG PAGSARA NG MENU -->
 
     <!-- Logo -->
     <h1 class="logo">AkingPahina</h1>
@@ -454,22 +493,20 @@
         }
 
         // ==========================================
-        // 📍 ADDRESS BAR — NA-AYOS NA! HINDI NA BIGLANG MAWAWALA
+        // 📍 ADDRESS BAR —
         // ==========================================
         const addressBar = document.getElementById('addressBar');
         const addressBarWrapper = document.getElementById('addressBarWrapper');
         const addressInput = document.getElementById('addressInput');
         const addressInputWrapper = document.getElementById('addressInputWrapper');
 
-        // Buksan ang kahon — kapag kinlick ang teksto
         addressBarWrapper.addEventListener('click', (e) => {
-            e.stopPropagation(); // Mahalaga! — Hindi magsasara agad
+            e.stopPropagation();
             addressBarWrapper.style.display = 'none';
             addressInputWrapper.style.display = 'block';
             addressInput.focus();
         });
 
-        // Kapag pinindot ang Enter — buksan at isara
         addressInput.addEventListener('keypress', e => {
             if (e.key === 'Enter') {
                 buksanUrlOHanapin(addressInput.value);
@@ -479,13 +516,10 @@
             }
         });
 
-        // Isara LAMANG kapag kinlick SA LABAS — hindi sa loob!
         document.addEventListener('click', e => {
-            // Kung kinlick sa loob ng kahon — HUWAG magsara
             if (addressInputWrapper.contains(e.target) || addressBarWrapper.contains(e.target)) {
                 return;
             }
-            // Kung kinlick sa labas — saka lang magsara
             if (addressInputWrapper.style.display === 'block') {
                 addressInputWrapper.style.display = 'none';
                 addressBarWrapper.style.display = 'block';
