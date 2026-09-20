@@ -1,20 +1,547 @@
 <!DOCTYPE html>
-<html lang="tl">
+<html lang="tl-PH">
 <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Search Tool</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang Aking Pahina</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff;
+            min-height: 100vh;
+        }
+
+        /* --- Address Bar --- */
+        .address-bar-container {
+            padding: 10px 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .address-bar-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .address-bar {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            background: #f1f3f4;
+            border-radius: 24px;
+            cursor: pointer;
+            color: #5f6368;
+            font-size: 15px;
+            transition: background 0.2s;
+        }
+        .address-bar:hover {
+            background: #e8eaed;
+        }
+        .address-search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5f6368;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .address-input-wrapper {
+            position: relative;
+            width: 100%;
+            display: none;
+        }
+        #addressInput {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border-radius: 24px;
+            border: 1px solid #ddd;
+            font-size: 15px;
+            outline: none;
+        }
+
+        /* --- Bar sa Itaas, KANAN --- */
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 12px 20px;
+            gap: 20px;
+        }
+        .top-icons {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+        .top-icons a, .top-icons button {
+            cursor: pointer;
+            color: inherit;
+            text-decoration: none;
+            background: none;
+            border: none;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .top-icons a:hover, .top-icons button:hover {
+            opacity: 0.7;
+        }
+
+        /* --- Pababang Menu --- */
+        .menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            padding: 10px 0;
+            min-width: 200px;
+            z-index: 100;
+        }
+        .menu.show {
+            display: block;
+        }
+        .icon-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+        .icon-item:hover {
+            background: #f1f3f4;
+        }
+        .icon-item a {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        /* --- Logo --- */
+        .logo {
+            text-align: center;
+            margin: 20px 0 10px;
+            font-size: 32px;
+        }
+        img {
+            display: block;
+            margin: 0 auto 30px;
+            max-width: 150px;
+            border-radius: 8px;
+        }
+
+        /* --- Kahon ng Paghahanap --- */
+        .search-box {
+            text-align: center;
+            margin: 0 auto 30px;
+            max-width: 600px;
+            padding: 0 20px;
+        }
+        .search-input-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .search-input-wrap .search-icon {
+            position: absolute;
+            left: 15px;
+            color: #5f6368;
+        }
+        #searchInput {
+            padding: 12px 20px 12px 45px;
+            flex: 1;
+            border-radius: 24px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            outline: none;
+        }
+        #searchInput:focus {
+            box-shadow: 0 1px 6px rgba(32,33,36,0.28);
+            border-color: transparent;
+        }
+        #searchBtn {
+            padding: 12px 18px;
+            margin-left: 8px;
+            border-radius: 50%;
+            border: none;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* --- Mga Shortcut --- */
+        .shortcuts {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding: 0 20px 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .shortcut-wrapper {
+            position: relative;
+        }
+        .shortcut-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .shortcut-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 20px 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            cursor: pointer;
+            min-width: 110px;
+            transition: background 0.2s;
+        }
+        .shortcut-item:hover {
+            background: #e8eaed;
+        }
+        .shortcut-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #e8eaed;
+            font-size: 16px;
+            color: #5f6368;
+        }
+        .shortcut-actions {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: none;
+            gap: 3px;
+            z-index: 10;
+        }
+        .shortcut-wrapper:hover .shortcut-actions {
+            display: flex;
+        }
+        .edit-btn, .delete-btn {
+            border: none;
+            background: rgba(255,255,255,0.95);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+        .edit-btn:hover { background: #e3f2fd; }
+        .delete-btn:hover { background: #ffebee; color: #d32f2f; }
+        #addShortcutBtn { background: #f8f9fa; }
+        #addShortcutBtn:hover { background: #e8eaed; }
+
+        /* --- Para sa Android/Mobile --- */
+        @media (max-width: 480px) {
+            .top-bar { padding: 10px 15px; }
+            .top-icons { gap: 15px; font-size: 14px; }
+            .logo { font-size: 24px; }
+            #searchInput { width: 100%; }
+            .shortcuts { gap: 10px; }
+            .shortcut-item { min-width: 90px; padding: 15px 10px; }
+            .menu { right: 10px; }
+        }
+    </style>
 </head>
 <body>
-    <div class="search-container">
-        <form action="https://www.google.com/search" method="get" target="_blank">
-            
-            <!-- ✅ ITINAMA: Wala nang https:// at /index.html sa dulo -->
-            <input type="hidden" name="sitesearch" value="google.com/search">
-            
-            <input type="text" name="q" id="search-box" placeholder="Maghanap..." required>
-            <button type="submit" class="btn">🔍 Hanapin</button>
-        </form>
+
+    <!-- Address Bar -->
+    <div class="address-bar-container">
+        <div class="address-bar-wrapper" id="addressBarWrapper">
+            <i class="fas fa-search address-search-icon"></i>
+            <div class="address-bar" id="addressBar">
+                Maghanap sa... o mag-type ng URL
+            </div>
+        </div>
+        <div class="address-input-wrapper" id="addressInputWrapper">
+            <i class="fas fa-search address-search-icon"></i>
+            <input type="text" id="addressInput" placeholder="Ilagay ang URL o maghanap...">
+        </div>
     </div>
+
+    <!-- Bar sa Itaas, KANAN -->
+    <div class="top-bar">
+        <div class="top-icons">
+            <a href="https://mail.google.com" target="_blank">
+                <i class="fas fa-envelope"></i> Gmail
+            </a>
+            <a href="https://images.google.com" target="_blank">
+                <i class="fas fa-images"></i> Mga Larawan
+            </a>
+            <button id="menuBtn">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Pababang Menu -->
+    <div id="menu" class="menu">
+        <div class="icon-item"><a href="https://myaccount.google.com" target="_blank"><i class="fas fa-user-circle"></i> Account</a></div>
+        <div class="icon-item"><a href="https://drive.google.com" target="_blank"><i class="fab fa-google-drive"></i> Drive</a></div>
+        <div class="icon-item"><a href="https://www.youtube.com" target="_blank"><i class="fab fa-youtube"></i> YouTube</a></div>
+        <div class="icon-item"><a href="https://www.google.com/maps" target="_blank"><i class="fas fa-map-marker-alt"></i> Maps</a></div>
+        <div class="icon-item"><a href="https://calendar.google.com" target="_blank"><i class="fas fa-calendar-alt"></i> Calendar</a></div>
+        <div class="icon-item"><a href="https://images.google.com" target="_blank"><i class="fas fa-images"></i> Mga Larawan</a></div>
+    </div>
+
+    <!-- Logo -->
+    <h1 class="logo">AkingPahina</h1>
+    <img src="Logo para kay Robin.png" alt="Logo">
+
+    <!-- Kahon ng Paghahanap -->
+    <div class="search-box">
+        <div class="search-input-wrap">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="Maghanap dito...">
+            <button id="searchBtn">🔍</button>
+        </div>
+    </div>
+
+    <!-- Mga Shortcut -->
+    <div class="shortcuts" id="shortcutsContainer">
+        <!-- Magdagdag ng Bagong Shortcut -->
+        <div class="shortcut-wrapper">
+            <div class="shortcut-item" id="addShortcutBtn">
+                <i class="fas fa-plus-circle"></i>
+                <span>Magdagdag ng...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 📦 TINIPON NG SHORTCUT — HINDI NA NAWAWALA
+        // ==========================================
+        const STORAGE_KEY = 'aking_pahina_shortcuts';
+
+        // --- KUSANG ICON BATAY SA URL O PANGALAN ---
+        function kumuhaNgIcon(url, pangalan) {
+            const ibaba = (url + ' ' + pangalan).toLowerCase();
+            if (ibaba.includes('youtube')) return { icon: 'fab fa-youtube', kulay: '#FF0000' };
+            if (ibaba.includes('gmail') || ibaba.includes('mail')) return { icon: 'fas fa-envelope', kulay: '#EA4335' };
+            if (ibaba.includes('drive')) return { icon: 'fab fa-google-drive', kulay: '#4285F4' };
+            if (ibaba.includes('facebook')) return { icon: 'fab fa-facebook', kulay: '#1877F2' };
+            if (ibaba.includes('github')) return { icon: 'fab fa-github', kulay: '#333333' };
+            if (ibaba.includes('dola')) return { icon: 'fas fa-robot', kulay: '#9C27B0' };
+            if (ibaba.includes('rufus')) return { icon: 'fas fa-tools', kulay: '#FF9800' };
+            if (ibaba.includes('java') || ibaba.includes('program')) return { icon: 'fas fa-code', kulay: '#007396' };
+            if (ibaba.includes('driver')) return { icon: 'fas fa-folder', kulay: '#34A853' };
+            if (ibaba.includes('google')) return { icon: 'fab fa-google', kulay: '#4285F4' };
+            if (ibaba.includes('wiki')) return { icon: 'fab fa-wikipedia-w', kulay: '#000000' };
+            const unangTitk = pangalan.trim().charAt(0).toUpperCase() || '?';
+            return { icon: 'fas fa-user', kulay: '#607D8B', unangTitk };
+        }
+
+        // --- I-save sa Storage ---
+        function iSaveMgaShortcut(mgaShortcut) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(mgaShortcut));
+        }
+
+        // --- Kunin mula sa Storage ---
+        function iKuninMgaShortcut() {
+            const nakuha = localStorage.getItem(STORAGE_KEY);
+            return nakuha ? JSON.parse(nakuha) : [
+                { url: 'https://driverpack.io/en/catalog', pangalan: 'DRIVER_PACK' },
+                { url: 'https://www.programiz.com/java-programming', pangalan: 'Java-programm...' }
+            ];
+        }
+
+        // --- Ipakita lahat ng Shortcut ---
+        function iIpakitaLahat() {
+            const container = document.getElementById('shortcutsContainer');
+            const addBtn = document.getElementById('addShortcutBtn').parentElement;
+            Array.from(container.children).forEach(anak => {
+                if (anak !== addBtn) anak.remove();
+            });
+            const mgaShortcut = iKuninMgaShortcut();
+            mgaShortcut.forEach((sc, index) => {
+                gumawaNgShortcutElement(sc.url, sc.pangalan, index);
+            });
+        }
+
+        // --- Gumawa ng Elemento ng Shortcut ---
+        function gumawaNgShortcutElement(url, pangalan, index) {
+            const container = document.getElementById('shortcutsContainer');
+            const addBtn = document.getElementById('addShortcutBtn').parentElement;
+            const { icon, kulay, unangTitk } = kumuhaNgIcon(url, pangalan);
+            const wrapper = document.createElement('div');
+            wrapper.className = 'shortcut-wrapper';
+            wrapper.dataset.index = index;
+            wrapper.innerHTML = `
+                <div class="shortcut-actions">
+                    <button class="edit-btn" title="I-edit"><i class="fas fa-pen"></i></button>
+                    <button class="delete-btn" title="Burahin"><i class="fas fa-trash"></i></button>
+                </div>
+                <a href="${url}" target="_blank" class="shortcut-link">
+                    <div class="shortcut-item">
+                        <div class="shortcut-icon" style="color:${kulay};">
+                            ${unangTitk ? `<span>${unangTitk}</span>` : `<i class="${icon}"></i>`}
+                        </div>
+                        <span>${pangalan}</span>
+                    </div>
+                </a>
+            `;
+            container.insertBefore(wrapper, addBtn);
+        }
+
+        // --- Magdagdag / I-edit / Burahin ---
+        function magdagdagShortcut(url, pangalan) {
+            if (!url.startsWith('http')) url = 'https://' + url;
+            const mgaShortcut = iKuninMgaShortcut();
+            mgaShortcut.push({ url, pangalan });
+            iSaveMgaShortcut(mgaShortcut);
+            iIpakitaLahat();
+        }
+        function iEditShortcut(index, bagongUrl, bagongPangalan) {
+            if (!bagongUrl.startsWith('http')) bagongUrl = 'https://' + bagongUrl;
+            const mgaShortcut = iKuninMgaShortcut();
+            mgaShortcut[index] = { url: bagongUrl, pangalan: bagongPangalan };
+            iSaveMgaShortcut(mgaShortcut);
+            iIpakitaLahat();
+        }
+        function burahinShortcut(index) {
+            const mgaShortcut = iKuninMgaShortcut();
+            mgaShortcut.splice(index, 1);
+            iSaveMgaShortcut(mgaShortcut);
+            iIpakitaLahat();
+        }
+
+        // ==========================================
+        // ☰ MENU
+        // ==========================================
+        const menuBtn = document.getElementById('menuBtn');
+        const menu = document.getElementById('menu');
+        menuBtn.addEventListener('click', e => { e.stopPropagation(); menu.classList.toggle('show'); });
+        document.addEventListener('click', () => menu.classList.remove('show'));
+        menu.addEventListener('click', e => e.stopPropagation());
+
+        // ==========================================
+        // 🔍 PANGKALAHATANG PAGBUKAS NG URL O PAGHANAP
+        // ==========================================
+        function buksanUrlOHanapin(teksto) {
+            if (!teksto.trim()) return;
+            const t = teksto.trim();
+            if ((t.includes('.') && !t.includes(' ')) || t.startsWith('http')) {
+                const url = t.startsWith('http') ? t : 'https://' + t;
+                window.open(url, '_blank');
+            } else {
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(t)}`, '_blank');
+            }
+        }
+
+        // ==========================================
+        // 📍 ADDRESS BAR — NA-AYOS NA! HINDI NA BIGLANG MAWAWALA
+        // ==========================================
+        const addressBar = document.getElementById('addressBar');
+        const addressBarWrapper = document.getElementById('addressBarWrapper');
+        const addressInput = document.getElementById('addressInput');
+        const addressInputWrapper = document.getElementById('addressInputWrapper');
+
+        // Buksan ang kahon — kapag kinlick ang teksto
+        addressBarWrapper.addEventListener('click', (e) => {
+            e.stopPropagation(); // Mahalaga! — Hindi magsasara agad
+            addressBarWrapper.style.display = 'none';
+            addressInputWrapper.style.display = 'block';
+            addressInput.focus();
+        });
+
+        // Kapag pinindot ang Enter — buksan at isara
+        addressInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                buksanUrlOHanapin(addressInput.value);
+                addressInput.value = '';
+                addressInputWrapper.style.display = 'none';
+                addressBarWrapper.style.display = 'block';
+            }
+        });
+
+        // Isara LAMANG kapag kinlick SA LABAS — hindi sa loob!
+        document.addEventListener('click', e => {
+            // Kung kinlick sa loob ng kahon — HUWAG magsara
+            if (addressInputWrapper.contains(e.target) || addressBarWrapper.contains(e.target)) {
+                return;
+            }
+            // Kung kinlick sa labas — saka lang magsara
+            if (addressInputWrapper.style.display === 'block') {
+                addressInputWrapper.style.display = 'none';
+                addressBarWrapper.style.display = 'block';
+            }
+        });
+
+        // ==========================================
+        // 🔍 SEARCH BOX
+        // ==========================================
+        const searchInput = document.getElementById('searchInput');
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            buksanUrlOHanapin(searchInput.value);
+            searchInput.value = '';
+        });
+        searchInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                buksanUrlOHanapin(searchInput.value);
+                searchInput.value = '';
+            }
+        });
+
+        // ==========================================
+        // ➕ ✏️ 🗑️ PANGUNAHING TAGAPAKINIG
+        // ==========================================
+        document.getElementById('addShortcutBtn').addEventListener('click', () => {
+            const url = prompt("Ilagay ang URL:", "https://");
+            if (!url) return;
+            const pangalan = prompt("Anong pangalan nito?");
+            if (!pangalan) return;
+            magdagdagShortcut(url, pangalan);
+        });
+
+        document.getElementById('shortcutsContainer').addEventListener('click', e => {
+            const wrapper = e.target.closest('.shortcut-wrapper');
+            if (!wrapper) return;
+            const index = parseInt(wrapper.dataset.index);
+            if (isNaN(index)) return;
+
+            if (e.target.closest('.delete-btn')) {
+                if (confirm("Burahin ito?")) burahinShortcut(index);
+            }
+            if (e.target.closest('.edit-btn')) {
+                const mgaShortcut = iKuninMgaShortcut();
+                const sc = mgaShortcut[index];
+                const bagongUrl = prompt("Bagong URL:", sc.url);
+                if (!bagongUrl) return;
+                const bagongPangalan = prompt("Bagong pangalan:", sc.pangalan);
+                if (!bagongPangalan) return;
+                iEditShortcut(index, bagongUrl, bagongPangalan);
+            }
+        });
+
+        // ==========================================
+        // 🚀 SIMULAN
+        // ==========================================
+        iIpakitaLahat();
+    </script>
+
 </body>
 </html>
